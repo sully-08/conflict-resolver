@@ -1,0 +1,61 @@
+name: Analyse des conflits de fusion
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  analyser-conflits:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configurer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+
+      - name: Tenter la fusion et détecter les conflits
+        id: fusion
+        run: |
+          git config user.email "bot@github.com"
+          git config user.name "ConflictBot"
+          git merge origin/${{ github.base_ref }} --no-commit --no-ff || true
+          echo "fusion_tentee=true" >> $GITHUB_OUTPUT
+
+      - name: Lancer l'analyse du système
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python main.py --github-mode > rapport.txt 2>&1 || true
+          cat rapport.txt
+
+      - name: Publier le rapport en commentaire PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            let rapport = '';
+            try {
+              rapport = fs.readFileSync('rapport.txt', 'utf8');
+            } catch (e) {
+              rapport = 'Aucun conflit détecté ou erreur de lecture du rapport.';
+            }
+
+            const body = rapport.trim().length > 0
+              ? `## 🔍 Analyse des conflits de fusion\n\`\`\`\n${rapport.slice(0, 60000)}\n\`\`\``
+              : '## ✅ Aucun conflit détecté dans cette Pull Request.';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
