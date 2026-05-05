@@ -9,12 +9,12 @@ import os
 # Permet d'importer les modules depuis le même dossier
 sys.path.insert(0, os.path.dirname(__file__))
 
-from module1_detection   import detect_conflicts
-from module2_extraction  import extract_conflict_blocks, get_code_versions
-from module3_ast         import analyze_versions
-from module4_comparaison import compare_asts
-from module5_explication import explain_conflict
-from module6_resolution  import generate_resolution
+from modules.module1_detection   import detect_conflicts
+from modules.module2_extraction  import extract_conflict_blocks, get_code_versions
+from modules.module3_ast         import analyze_versions
+from modules.module4_comparaison import compare_asts
+from modules.module5_explication import explain_conflict
+from modules.module6_resolution  import generate_resolution
 
 
 def run_pipeline(files: dict) -> list:
