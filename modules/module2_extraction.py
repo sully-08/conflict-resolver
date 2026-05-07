@@ -3,7 +3,7 @@ Module 2 : Extraction des blocs en conflit
 Rôle : Isoler les versions A et B à partir des marqueurs Git
 """
 
-from module1_detection import MARKER_START, MARKER_SEP, MARKER_END
+from modules.module1_detection import MARKER_START, MARKER_SEP, MARKER_END
 
 
 def extract_conflict_blocks(detection_report: dict) -> list:

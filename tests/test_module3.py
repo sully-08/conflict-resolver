@@ -3,9 +3,9 @@ test_module3.py — Test unitaire du Module 3 : Analyse syntaxique AST
 """
 
 import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from module3_ast import parse_code, analyze_versions
+from modules.module3_ast import parse_code, analyze_versions
 
 print("=" * 55)
 print("  TEST MODULE 3 — Analyse syntaxique (AST)")

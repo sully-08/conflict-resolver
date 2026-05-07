@@ -3,10 +3,10 @@ test_module4.py — Test unitaire du Module 4 : Comparaison structurelle
 """
 
 import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from module3_ast         import analyze_versions
-from module4_comparaison import compare_asts
+from modules.module3_ast         import analyze_versions
+from modules.module4_comparaison import compare_asts
 
 print("=" * 55)
 print("  TEST MODULE 4 — Comparaison structurelle")

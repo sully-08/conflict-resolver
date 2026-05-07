@@ -3,9 +3,9 @@ test_module5.py — Test unitaire du Module 5 : Explication en langage naturel
 """
 
 import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from module5_explication import build_prompt, explain_conflict, _fallback_explanation
+from modules.module5_explication import build_prompt, explain_conflict, _fallback_explanation
 
 print("=" * 55)
 print("  TEST MODULE 5 — Explication (LLM / Gemini)")

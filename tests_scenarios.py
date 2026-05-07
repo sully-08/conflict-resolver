@@ -7,7 +7,7 @@ Scénario 3 : Conflit sémantique / changement de signature
 
 import sys
 import os
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from main import run_pipeline, print_final_report
 

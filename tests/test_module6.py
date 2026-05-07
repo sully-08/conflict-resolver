@@ -3,9 +3,9 @@ test_module6.py — Test unitaire du Module 6 : Aide à la résolution
 """
 
 import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from module6_resolution import generate_resolution, RESOLUTION_GUIDES
+from modules.module6_resolution import generate_resolution, RESOLUTION_GUIDES
 
 print("=" * 55)
 print("  TEST MODULE 6 — Aide à la résolution")

@@ -3,9 +3,9 @@ test_module1.py — Test unitaire du Module 1 : Détection des conflits
 """
 
 import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from module1_detection import detect_conflicts, detect_conflicts_in_text
+from modules.module1_detection import detect_conflicts, detect_conflicts_in_text
 
 print("=" * 55)
 print("  TEST MODULE 1 — Détection des conflits")

@@ -3,10 +3,10 @@ test_module2.py — Test unitaire du Module 2 : Extraction des blocs
 """
 
 import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from module1_detection  import detect_conflicts_in_text
-from module2_extraction import extract_conflict_blocks, get_code_versions
+from modules.module1_detection  import detect_conflicts_in_text
+from modules.module2_extraction import extract_conflict_blocks, get_code_versions
 
 print("=" * 55)
 print("  TEST MODULE 2 — Extraction des blocs")

@@ -6,8 +6,8 @@ Pipeline : Détection → Extraction → AST → Comparaison → Explication →
 import sys
 import os
 
-# Permet d'importer les modules depuis le même dossier
-sys.path.insert(0, os.path.dirname(__file__))
+# Permet d'importer les modules depuis le dossier modules
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))          
 
 from modules.module1_detection   import detect_conflicts
 from modules.module2_extraction  import extract_conflict_blocks, get_code_versions
