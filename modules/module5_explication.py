@@ -10,7 +10,8 @@ import json
 from google import genai
 
 # ── Configuration ─────────────────────────────────────────────────
-GEMINI_API_KEY = "AIzaSyCvU08W2US7-C9GNd3d1yUuY0HouFAPCdo"
+import os
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 #utilisation de la derniere version de Gemini
 GEMINI_MODEL   = "gemini-2.5-flash"
 
