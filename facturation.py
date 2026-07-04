@@ -1,6 +1,6 @@
-def calculer_total(prix, quantite):
-    return prix * quantite
+def calculer_total_TTC(prix, quantite, taux_tva=0.2):
+    return prix * quantite * (1 + taux_tva)
 
 def appliquer_remise(prix, remise):
-    total = calculer_total(prix, 1)
+    total = calculer_total_TTC(prix, 1)
     return total - remise
