@@ -7,10 +7,16 @@ on:
 jobs:
   analyser-conflits:
     runs-on: ubuntu-latest
+ # ── AJOUTEZ CE BLOC DE PERMISSIONS ICI ──
+    permissions:
+      pull-requests: write
+      issues: write
+      contents: read  # Requis pour pouvoir récupérer le dépôt (actions/checkout)
+    # ────────────────────────────────────────
 
     steps:
       - name: Récupérer le dépôt
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 
         with:
           fetch-depth: 0
 
