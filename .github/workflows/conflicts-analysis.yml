@@ -1,4 +1,4 @@
-name: Analyse des conflits de fusion
+name: Résolution des conflits de fusion
 
 on:
   pull_request:
@@ -10,14 +10,14 @@ jobs:
 
     steps:
       - name: Récupérer le dépôt
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Configurer Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Installer les dépendances
         run: pip install -r requirements.txt
@@ -34,24 +34,24 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          python main.py --github-mode > rapport.txt 2>&1 || true
-          cat rapport.txt
+          python main.py --github-mode > guide.txt 2>&1 || true
+          cat guide.txt
 
-      - name: Publier le rapport en commentaire PR
-        uses: actions/github-script@v6
+      - name: Publier le guide en commentaire PR
+        uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            let rapport = '';
+            let guide = '';
             try {
-              rapport = fs.readFileSync('rapport.txt', 'utf8');
+              guide = fs.readFileSync('guide.txt', 'utf8');
             } catch (e) {
-              rapport = 'Aucun conflit détecté ou erreur de lecture du rapport.';
+              guide = 'Aucun conflit détecté ou erreur de lecture du guide.';
             }
 
-            const body = rapport.trim().length > 0
-              ? `## 🔍 Analyse des conflits de fusion\n\`\`\`\n${rapport.slice(0, 60000)}\n\`\`\``
-              : '## ✅ Aucun conflit détecté dans cette Pull Request.';
+            const body = guide.trim().length > 0
+              ? `## Analyse des conflits de fusion\n\`\`\`\n${guide.slice(0, 60000)}\n\`\`\``
+              : '## Aucun conflit détecté dans cette Pull Request.';
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
