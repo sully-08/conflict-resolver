@@ -1,3 +1,4 @@
-def montant(prix, quantite):
+def calculer_total(prix, quantite, remise=0):
     """Calcule le total d'une facture."""
-    return prix * quantite
+    total = prix * quantite
+    return total - remise
