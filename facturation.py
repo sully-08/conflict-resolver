@@ -1,2 +1,2 @@
-def montant(prix, quantite):
-    return prix * quantite
+def montant(prix, quantite, tva):
+    return prix * quantite * (1 + tva)
