@@ -1,2 +1,2 @@
-def calculer_total(prix, quantite):
+def montant(prix, quantite):
     return prix * quantite
