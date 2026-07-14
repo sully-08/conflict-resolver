@@ -95,17 +95,7 @@ if __name__ == "__main__":
         if not fichiers:
             print(" Aucun fichier en conflit détecté dans le dépôt.")
             sys.exit(0)
-    else:
-        fichiers = {
-            "exemple.py": """\
-def calculer(x, y):
-<<<<<<< LOCAL
-    return x + y
-=======
-    return x * y
->>>>>>> REMOTE
-"""
-        }
+
 
     results = run_pipeline(fichiers)
     print_final_report(results)

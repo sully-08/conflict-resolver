@@ -112,7 +112,7 @@ def _build_specific_notes(report: dict) -> list:
 
 def _print_resolution(resolution: dict):
     print(f"\n[RÉSOLUTION] Guide : {resolution['titre']}")
-    print(f"  Enjeux : {resolution['enjeux'][:80]}...")
+    print(f"  Enjeux : {resolution['enjeux'][:200]}...")
     print(f"  Actions ({len(resolution['actions'])}) :")
     for i, action in enumerate(resolution["actions"], 1):
         print(f"    {i}. {action}")
