@@ -5,8 +5,7 @@ main.py — Système d'aide à la résolution des conflits de fusion Git
 import sys
 import os
 import glob
-
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "modules"))
 
 from modules.module1_detection   import detect_conflicts
 from modules.module2_extraction  import extract_conflict_blocks, get_code_versions
