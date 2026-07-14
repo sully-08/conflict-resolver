@@ -1,96 +1,117 @@
 """
-Module 5 : Explication en langage naturel
-Rôle : Envoyer le diagnostic à Gemini et retourner une explication du conflit
+Module 5 : Génération du rapport de résolution avec Gemini
 
-Installation :
-    pip install google-genai
+Rôle :
+Recevoir le diagnostic technique produit par les modules Python
+et demander à Gemini de rédiger le rapport final destiné au
+développeur.
+
+Aucun texte utilisateur n'est généré par Python.
 """
 
 import json
+import os
 from google import genai
 
-# ── Configuration ─────────────────────────────────────────────────
-import os
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-#utilisation de la derniere version de Gemini
-GEMINI_MODEL   = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-2.5-flash"
 
 _client = genai.Client(api_key=GEMINI_API_KEY)
 
 
 def build_prompt(code_a: str, code_b: str, comparison_report: dict) -> str:
-    """Construit le prompt envoyé à Gemini."""
-    conflict_type = comparison_report.get("conflict_type", "INCONNU")
-    param_changes = comparison_report.get("param_changes", {})
-    removed_funcs = comparison_report.get("removed_functions", [])
-    added_funcs   = comparison_report.get("added_functions", [])
-    calls_at_risk = [c["name"] for c in comparison_report.get("calls_at_risk", [])]
+    """
+    Construit le prompt destiné à Gemini.
+    Python fournit uniquement un diagnostic structuré.
+    """
 
-    return f"""Tu es un assistant expert en développement logiciel collaboratif.
-Analyse ce conflit de fusion Git et explique-le de manière claire et concise.
+    diagnostic = {
+        "conflict_type": comparison_report.get("conflict_type"),
+        "modified_functions": comparison_report.get("modified_functions", []),
+        "removed_functions": comparison_report.get("removed_functions", []),
+        "added_functions": comparison_report.get("added_functions", []),
+        "parameter_changes": comparison_report.get("param_changes", {}),
+        "calls_at_risk": comparison_report.get("calls_at_risk", [])
+    }
 
-=== VERSION A (branche locale) ===
+    return f"""
+Tu es un expert Git et développement collaboratif.
+
+Tu assistes un développeur confronté à un conflit de fusion.
+
+Voici le diagnostic technique produit automatiquement par le système.
+
+CODE VERSION A
+--------------
 {code_a}
 
-=== VERSION B (branche distante) ===
+CODE VERSION B
+--------------
 {code_b}
 
-=== DIAGNOSTIC STRUCTUREL ===
-- Type de conflit détecté : {conflict_type}
-- Fonctions supprimées/renommées : {removed_funcs}
-- Fonctions ajoutées : {added_funcs}
-- Changements de paramètres : {json.dumps(param_changes, ensure_ascii=False)}
-- Appels de fonctions à risque : {calls_at_risk}
+DIAGNOSTIC
+----------
+{json.dumps(diagnostic, indent=2, ensure_ascii=False)}
 
-Génère une explication structurée avec exactement ces trois sections :
-1. NATURE DU CONFLIT : En une ou deux phrases, décris ce qui s'est passé.
-2. DIFFÉRENCES OBSERVÉES : Liste les différences concrètes entre A et B.
-3. RISQUES POTENTIELS : Quels problèmes ce conflit peut-il causer si mal résolu ?
+Ta mission est de rédiger directement le rapport qui sera publié
+dans une Pull Request GitHub.
 
-Sois direct et technique. Pas de formules de politesse."""
+Le rapport doit être entièrement rédigé en langage naturel.
+
+Il doit contenir uniquement les sections suivantes :
+
+# Rapport d'assistance à la résolution
+
+## Résumé
+
+Résume en quelques phrases la nature du conflit.
+
+## Analyse
+
+Explique ce qui différencie les deux versions et pourquoi Git ne
+peut pas résoudre automatiquement ce conflit.
+
+## Risques
+
+Présente les conséquences possibles si une mauvaise résolution est
+effectuée.
+
+## Recommandations
+
+Donne un guide de résolution clair, concret et adapté au conflit
+détecté.
+
+Consignes importantes :
+
+- Ne parle jamais d'AST.
+- Ne parle jamais de Tree-sitter.
+- Ne parle jamais du pipeline interne.
+- Ne parle jamais des modules.
+- Ne fais aucune référence au fonctionnement du système.
+- Ne reproduis pas le JSON.
+- Ne fais aucune formule de politesse.
+- Utilise un ton professionnel destiné à un développeur.
+"""
 
 
-def explain_conflict(code_a: str, code_b: str, comparison_report: dict) -> str:
-    """Envoie le prompt à Gemini et retourne l'explication."""
-    prompt = build_prompt(code_a, code_b, comparison_report)
+def generate_resolution_report(
+    code_a: str,
+    code_b: str,
+    comparison_report: dict
+) -> str:
+    """
+    Génère le rapport final destiné au développeur.
+    """
 
-    try:
-        response = _client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt
-        )
-        explanation = response.text
-        print("[EXPLICATION]  Explication générée par Gemini")
-        return explanation
+    prompt = build_prompt(
+        code_a,
+        code_b,
+        comparison_report
+    )
 
-    except Exception as e:
-        print(f"[EXPLICATION] Erreur Gemini ({e}), fallback utilisé")
-        return _fallback_explanation(comparison_report)
+    response = _client.models.generate_content(
+        model=GEMINI_MODEL,
+        contents=prompt
+    )
 
-
-def _fallback_explanation(report: dict) -> str:
-    """Explication statique si l'API est inaccessible."""
-    t = report.get("conflict_type", "INCONNU")
-    lines = [
-        "1. NATURE DU CONFLIT :",
-        f"   Type identifié : {t}",
-        "",
-        "2. DIFFÉRENCES OBSERVÉES :",
-    ]
-    if report.get("removed_functions"):
-        lines.append(f"   - Fonctions absentes dans B : {report['removed_functions']}")
-    if report.get("added_functions"):
-        lines.append(f"   - Fonctions ajoutées dans B : {report['added_functions']}")
-    if report.get("param_changes"):
-        for fn, ch in report["param_changes"].items():
-            lines.append(
-                f"   - Paramètres de '{fn}' modifiés : "
-                f"{ch['version_a']} → {ch['version_b']}"
-            )
-    lines += [
-        "",
-        "3. RISQUES POTENTIELS :",
-        "   - Erreur de compilation si les appels ne correspondent plus aux signatures.",
-        "   - Bug silencieux si Git fusionne sans conflit textuel.",
-    ]
-    return "\n".join(lines)
+    return response.text
