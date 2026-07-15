@@ -60,18 +60,18 @@ Le rapport doit être entièrement rédigé en langage naturel.
 
 Il doit contenir uniquement les sections suivantes :
 
-# Rapport d'assistance à la résolution
+------- Rapport d'assistance à la résolution -------
 
-## Résumé
+------- Résumé -------
 
 Résume en quelques phrases la nature du conflit.
 
-## Analyse
+------- Analyse -------
 
 Explique ce qui différencie les deux versions et pourquoi Git ne
 peut pas résoudre automatiquement ce conflit.
 
-## Risques
+------- Risques -------
 
 Présente les conséquences possibles si une mauvaise résolution est
 effectuée.
